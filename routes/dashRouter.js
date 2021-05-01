@@ -29,4 +29,22 @@ dashRouter.route('/')
     res.end( 'Deleting all dashes' );
 });
 
+dashRouter.get('/:dashId', (req, res, next) => {
+    res.end('Will send details of the dashe ' + req.params.dashId + ' to you');
+})
+
+.post('/:dashId', (req, res, next) => {
+    res.statusCode = 403;
+    res.end('Post operation not supported for the route /dashes/' + req.params.dashId);
+})
+
+.put('/:dashId', (req, res, next) => {
+    res.write('Updating the dash: ' + req.params.dashId + '/n');
+    res.end('Will update the dash: ' + req.body.name + ' with details ' + req.body.description);
+})
+
+.delete('/:dashId', (req, res, next) => {
+    res.end('Deleting dash: ' + req.params.dashId);
+});
+
 module.exports = dashRouter;

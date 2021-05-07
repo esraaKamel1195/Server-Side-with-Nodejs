@@ -15,7 +15,7 @@ connect.then((db) => {
 
     newDash.save()
             .then((dash) => {
-                console.log(dish);
+                console.log(dash);
                 return Dahes.find({});
             }).then((dashes)=> {
                 console.log(dashes);

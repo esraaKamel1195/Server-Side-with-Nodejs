@@ -3,12 +3,14 @@ const Schema = mongoose.Schema;
 
 const dishSchema = new Schema({
     name: {
-        type: string,
+        type: String,
         required: true,
-        unique: true
+        unique: true,
+        index:true,
+        sparse:true
     },
     description: {
-        type: string,
+        type: String,
         required: true
     }
 }, {
@@ -17,4 +19,4 @@ const dishSchema = new Schema({
 
 var Dashes = mongoose.model('dash', dishSchema);
 
-module.exports = Dashes;
+module.exports = Dashes; 

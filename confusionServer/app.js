@@ -3,14 +3,24 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const dashRouter = require('./routes/dashRouter');
+const dishRouter = require('./routes/dishRouter');
 const promoRouter = require('./routes/promoRouter');
 const leaderRouter = require('./routes/leaderRouter');
 
 var app = express();
+
+
+const url = 'mongodb://localhost:27017/conFusion';
+const connect = mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+
+connect.then((db) => {
+    console.log("Connected correctly to server");
+  }, (err) => { console.log(err); }
+);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use("/dashes", dashRouter);
+app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);
 

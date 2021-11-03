@@ -8,7 +8,7 @@ var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
+const usersRouter = require("./routes/users");
 const dishRouter = require("./routes/dishRouter");
 const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
@@ -47,10 +47,12 @@ app.use(session({
   store: new FileStore()
 }));
 
-function auth(req, res, next) {
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
 
-  // if (!req.signedCookies.user) {  // for cookies
-  if( !req.session.user ) {
+function authUsingCookies(req, res, next) {
+  // for cookies
+  if (!req.signedCookies.user) {  
     var authHeader = req.headers.authorization;
     if (!authHeader) {
       var err = new Error("you are not authenticated!");
@@ -67,8 +69,8 @@ function auth(req, res, next) {
     var password = auth[1];
 
     if (user == "admin" && password == "password") {
-      // res.cookie('user', 'admin', { signed: true }); // for cookie
-      req.session.user = 'admin';
+      // for cookie
+      res.cookie('user', 'admin', { signed: true }); 
       next(); // authorized
 
     } else {
@@ -79,8 +81,8 @@ function auth(req, res, next) {
       return;
     }
   } else {
-      // if( req.signedCookies.user === 'admin' ) { // for cookies
-      if( req.session.user === 'admin' ) {
+      // for cookies
+      if( req.signedCookies.user === 'admin' ) { 
         console.log('req.session: ',req.session);
         next();
         
@@ -92,12 +94,33 @@ function auth(req, res, next) {
   }
 }
 
-app.use(auth);
+function authUsingSessions(req, res, next) {
+
+  // for sessions
+  if( !req.session.user ) {
+
+    var err = new Error("you are not authenticated!");
+    err.status = 403;
+    return next(err);
+
+  } else {
+    if (req.session.user === 'authenticated') {
+      next();
+    }
+    else {
+      var err = new Error('You are not authenticated!');
+      err.status = 403;
+      return next(err);
+    }
+  }
+}
+
+// app.use(authUsingCookies);
+app.use(authUsingSessions);
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+
 app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);

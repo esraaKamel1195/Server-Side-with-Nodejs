@@ -6,6 +6,8 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
+var passport = require('passport');
+var authenticate = require('./authenticate');
 
 var indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -38,6 +40,8 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("12345-67890-09876-54321"));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(session({
   name: 'session-id',
@@ -115,8 +119,22 @@ function authUsingSessions(req, res, next) {
   }
 }
 
-// app.use(authUsingCookies);
-app.use(authUsingSessions);
+function authUsingPassport(req, res, next) {
+  console.log(req.user);
+
+  if( !req.user ) {
+    var err = new Error("you are not authenticated!");
+    err.status = 403;
+    return next(err);
+  } else {
+    next();
+  }
+}
+
+// app.use(authUsingCookies);     // when using cookiees in authentication ******************
+// app.use(authUsingSessions);    // when using sessions in authentication ******************
+app.use(authUsingPassport);       // when using passport in authentication ******************
+
 
 app.use(express.static(path.join(__dirname, "public")));
 

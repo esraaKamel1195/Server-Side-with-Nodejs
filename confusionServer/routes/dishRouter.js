@@ -1,9 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 
 const dishRouter = express.Router();
-const Dishes = require('../models/dishes')
+const Dishes = require('../models/dishes');
 
 dishRouter.use(bodyParser.json());
 

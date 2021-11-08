@@ -1,35 +1,57 @@
 var express = require('express');
 var router = express.Router();
 const bodyParser = require('body-parser');
+const passport = require('passport');
+
 var User = require('../models/user');
 
 router.use(bodyParser.json());
 
-//  Registeration API
+//  Registeration API ******************************************************************
 router.post('/signup', (req, res, next) => {
-  User.findOne({username: req.body.username})
-  .then((user) => {
-    if(user != null) {
-      var err = new Error('User ' + req.body.username + ' already exists!');
-      err.status = 403;
-      next(err);
-    }
-    else {
-      return User.create({
-        username: req.body.username,
-        password: req.body.password
-      });
-    }
-  })
-  .then((user) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.json({status: 'Registration Successful!', user: user});
-  }, (err) => next(err))
-  .catch((err) => next(err));
+
+  // Sign up user with session & cookiees *********************************************
+
+  // User.findOne({username: req.body.username})
+  // .then((user) => {
+  //   if(user != null) {
+  //     var err = new Error('User ' + req.body.username + ' already exists!');
+  //     err.status = 403;
+  //     next(err);
+  //   }
+  //   else {
+  //     return User.create({
+  //       username: req.body.username,
+  //       password: req.body.password
+  //     });
+  //   }
+  // })
+  // .then((user) => {
+  //   res.statusCode = 200;
+  //   res.setHeader('Content-Type', 'application/json');
+  //   res.json({status: 'Registration Successful!', user: user});
+  // }, (err) => next(err))
+  // .catch((err) => next(err));
+
+  // Sign up user with passport *********************************************************
+
+  User.register( new User({ username: req.body.username }),
+    req.body.password, (err, user) => {
+      if(err) {
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({err: err});
+      } else {
+        passport.authenticate('local')(req, res, () => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({ success: true, status: 'Registration Successful!' });
+        })
+      }
+    });
 });
 
-// Login API
+// Login API ****************************************************************************
 router.post('/login', (req, res, next) => {
   console.log(req.session);
   if(!req.session.user) {
@@ -74,7 +96,14 @@ router.post('/login', (req, res, next) => {
   }
 });
 
-// Logout API
+// Login with passport *******************************************************************
+router.post('/loginWithPassport', passport.authenticate('local'), ( req, res)=> {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.json({ success: true, status: 'You are successfully logged in!'});
+});
+
+// Logout API ****************************************************************************
 router.get('/logout', (req, res) => {
   if(req.session) {
     req.session.destroy();

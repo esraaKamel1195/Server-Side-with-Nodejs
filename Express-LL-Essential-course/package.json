@@ -1,0 +1,23 @@
+{
+  "name": "express-ll-essential-course",
+  "version": "1.0.0",
+  "description": "Practice with essential course",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esraaKamel1195/Server-Side-with-Nodejs.git"
+  },
+  "keywords": [
+    "node",
+    "express"
+  ],
+  "author": "Esraa Kamel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/esraaKamel1195/Server-Side-with-Nodejs/issues"
+  },
+  "homepage": "https://github.com/esraaKamel1195/Server-Side-with-Nodejs#readme"
+}

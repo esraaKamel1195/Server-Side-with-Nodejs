@@ -17,6 +17,9 @@ app.use(express.urlencoded({extended: true}));
 app.use('/images', express.static('images'));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
+// This is for proxies
+app.set('trust proxy', 'loopback');
+
 app.get('/', (req, res) =>
     // get data first
     res.json(data)
@@ -42,7 +45,6 @@ app.get('/item/:id', (req, res, next) => {
 }, (req, res) => {
     console.log('Did you get the right data?')
 });
-
 
 app.post('/newItem', (req,res) => {
     console.log(req.body);

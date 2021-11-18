@@ -4,7 +4,8 @@
   "description": "Practice with essential course",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon ./app.js --exec babel-node -e js"
+    "start": "nodemon ./app.js --exec babel-node -e js",
+    "debug": "set DebUG=express:* & nodemon ./app.js --exec babel-node -e js"
   },
   "repository": {
     "type": "git",

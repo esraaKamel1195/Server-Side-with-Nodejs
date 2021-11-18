@@ -22,7 +22,8 @@
   "homepage": "https://github.com/esraaKamel1195/Server-Side-with-Nodejs#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

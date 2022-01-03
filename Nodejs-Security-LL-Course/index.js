@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
 import routes from './src/routes/crmRoutes';
 
 const app = express();
@@ -18,6 +19,8 @@ routes(app);
 
 // serving static files
 app.use(express.static('public'));
+
+app.use(helmet());
 
 app.get('/', (req, res) =>
     res.send(`Node and express server is running on port ${PORT}`)

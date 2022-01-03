@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
+import RateLimit from 'express-rate-limit';
 import routes from './src/routes/crmRoutes';
 
 const app = express();
@@ -20,7 +21,17 @@ routes(app);
 // serving static files
 app.use(express.static('public'));
 
+// helmet setup
 app.use(helmet());
+
+// use express rate limit against DOS attacks
+const limiter = RateLimit({
+    windowMs: 10*60*1000, // 10 minites
+    max: 100, // limit of number of request per IP
+    delayMs: 0 // disaples delays
+});
+
+app.use(limiter);
 
 app.get('/', (req, res) =>
     res.send(`Node and express server is running on port ${PORT}`)

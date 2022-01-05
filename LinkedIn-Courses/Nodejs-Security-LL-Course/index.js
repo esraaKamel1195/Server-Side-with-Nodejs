@@ -2,11 +2,13 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+import csrf from 'csurf';
 import RateLimit from 'express-rate-limit';
 import routes from './src/routes/crmRoutes';
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 // mongoose connection
 mongoose.Promise = global.Promise;
@@ -33,9 +35,13 @@ const limiter = RateLimit({
 
 app.use(limiter);
 
-app.get('/', (req, res) =>
+app.use(cookieParser());
+
+app.use(csrf({ cookie: true }));
+
+app.get('/', (req, res) => {
     res.send(`Node and express server is running on port ${PORT}`)
-);
+});
 
 app.listen(PORT, () =>
     console.log(`your server is running on port ${PORT}`)

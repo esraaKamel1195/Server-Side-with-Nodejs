@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 import RateLimit from 'express-rate-limit';
+import jsonwebtoken from 'jsonwebtoken';
 import routes from './src/routes/crmRoutes';
 
 const app = express();
@@ -38,6 +39,23 @@ app.use(limiter);
 app.use(cookieParser());
 
 app.use(csrf({ cookie: true }));
+
+// jwt setup 
+app.use((req, res, next) => {
+    if( req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
+        jsonwebtoken.verify( req.headers.authorization.split(' ')[1], 'RESTFULAPIs', (err, decode) => {
+            if (err) {
+                req.user = undefined;
+            } else {
+                req.user = decode;
+            }
+            next();
+        });
+    } else {
+        req.user = undefined;
+        next();
+    }
+});
 
 app.get('/', (req, res) => {
     res.send(`Node and express server is running on port ${PORT}`)

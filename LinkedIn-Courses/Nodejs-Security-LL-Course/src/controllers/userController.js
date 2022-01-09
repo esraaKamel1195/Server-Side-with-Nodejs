@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/userModel';
+import { UserSchema } from '../models/userModel';
+
+const User = mongoose.model( 'User', UserSchema );
 
 export const LoginRequired = ( req, res, next ) => {
     if( req.user ) {
@@ -14,7 +16,7 @@ export const LoginRequired = ( req, res, next ) => {
 export const Register = ( req, res ) => {
     let newUser = new User( req.body );
     newUser.hashPassword = bcrypt.hashSync( req.body.password, 10 );
-    newUser.create((err, user) => {
+    newUser.save((err, user) => {
         if( err ) {
             return res.status(400).json({ message: err });
         } else {

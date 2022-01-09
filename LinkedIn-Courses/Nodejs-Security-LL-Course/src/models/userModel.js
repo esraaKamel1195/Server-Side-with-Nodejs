@@ -15,15 +15,11 @@ export const UserSchema = new Schema({
     hashPassword: {
         type: String,
         required: true
-    },
-    created_date: {
-       type: Date,
-       default: Date.now 
     }
+}, {
+    timestamps: true
 });
 
 UserSchema.methods.comparepassword = (password, hashPassword) => {
     return bcrypt.compareSync( password, hashPassword );
 };
-
-module.exports = mongoose.model( 'User', UserSchema );

@@ -19,9 +19,7 @@ export const ContactSchema = new Schema({
     },
     phone: {
         type: Number
-    },
-    created_date: {
-       type: Date,
-       default: Date.now 
     }
+}, {
+    timestamps: true
 });

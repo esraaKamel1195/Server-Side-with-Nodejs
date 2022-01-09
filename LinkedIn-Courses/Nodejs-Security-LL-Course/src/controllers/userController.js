@@ -11,7 +11,7 @@ export const LoginRequired = ( req, res, next ) => {
     }
 }
 
-export const register = ( req, res ) => {
+export const Register = ( req, res ) => {
     let newUser = new User( req.body );
     newUser.hashPassword = bcrypt.hashSync( req.body.password, 10 );
     newUser.create((err, user) => {
@@ -24,7 +24,7 @@ export const register = ( req, res ) => {
     });
 }
 
-export const login = ( req, res ) => {
+export const Login = ( req, res ) => {
     User.findOne({
         email: req.body.email
     }, (err, user) => {

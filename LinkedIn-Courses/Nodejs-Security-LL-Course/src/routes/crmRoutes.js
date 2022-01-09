@@ -6,6 +6,12 @@ import {
     deleteContact 
 } from '../controllers/crmController';
 
+import {
+    LoginRequired,
+    Register,
+    Login
+} from '../controllers/userController';
+
 const routes = (app) => {
     app.route('/contact')
     .get((req, res, next) => {
@@ -13,20 +19,28 @@ const routes = (app) => {
         console.log(`Request from: ${req.originalUrl}`)
         console.log(`Request type: ${req.method}`)
         next();
-    }, getContacts)
+    }, LoginRequired, getContacts )
     
     // POST endpoint
-    .post(addNewContact);
+    .post( LoginRequired, addNewContact );
 
     app.route('/contact/:contactId')
     // get specific contact
-    .get(getContactWithID)
+    .get( LoginRequired, getContactWithID )
     
     // put request
-    .put(updateContact)
+    .put( LoginRequired, updateContact )
 
     // delete request
-    .delete(deleteContact);
+    .delete( LoginRequired, deleteContact );
+
+    // register request
+    app.route('/auth/register')
+    .post( Register );
+
+    // login Request
+    app.route('login')
+    .post( Login );
 }
 
 export default routes;

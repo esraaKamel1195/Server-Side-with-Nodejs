@@ -8,7 +8,7 @@ import RateLimit from 'express-rate-limit';
 import routes from './src/routes/crmRoutes';
 
 const app = express();
-const PORT = 4000;
+const PORT = 3000;
 
 // mongoose connection
 mongoose.Promise = global.Promise;

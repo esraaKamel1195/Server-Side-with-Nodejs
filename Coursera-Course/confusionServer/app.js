@@ -3,7 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var mongoose = require("mongoose");
+require("./config/database").connect();
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var passport = require('passport');
@@ -16,21 +16,6 @@ const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
 
 var app = express();
-
-const url = "mongodb://localhost:27017/conFusion";
-const connect = mongoose.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-connect.then(
-  (db) => {
-    console.log("Connected correctly to server");
-  },
-  (err) => {
-    console.log(err);
-  }
-);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

@@ -19,6 +19,10 @@ mongoose.connect('mongodb://localhost/CRMdb');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// app.use(cookieParser());
+
+// app.use(csrf({ cookie: true }));
+
 // serving static files
 app.use(express.static('public'));
 
@@ -34,9 +38,7 @@ const limiter = RateLimit({
 
 app.use(limiter);
 
-app.use(cookieParser());
-
-app.use(csrf({ cookie: true }));
+routes(app);
 
 // jwt setup 
 app.use((req, res, next) => {
@@ -55,9 +57,8 @@ app.use((req, res, next) => {
     }
 });
 
-routes(app);
-
 app.get('/', (req, res) => {
+    // console.log(req.csrfToken());
     res.send(`Node and express server is running on port ${PORT}`)
 });
 

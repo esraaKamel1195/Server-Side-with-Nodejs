@@ -10,6 +10,7 @@ export const UserSchema = new Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: true
     },
     hashPassword: {
@@ -20,6 +21,6 @@ export const UserSchema = new Schema({
     timestamps: true
 });
 
-UserSchema.methods.comparepassword = (password, hashPassword) => {
+UserSchema.methods.comparePassword = function (password, hashPassword) {
     return bcrypt.compareSync( password, hashPassword );
 };

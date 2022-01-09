@@ -39,7 +39,7 @@ const routes = (app) => {
     .post( Register );
 
     // login Request
-    app.route('login')
+    app.route('/login')
     .post( Login );
 }
 

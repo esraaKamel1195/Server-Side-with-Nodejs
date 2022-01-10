@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 const Schema = mongoose.Schema;
 
-export const UserSchema = new Schema({
+const UserSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -24,3 +24,5 @@ export const UserSchema = new Schema({
 UserSchema.methods.comparePassword = function (password, hashPassword) {
     return bcrypt.compareSync( password, hashPassword );
 };
+
+module.exports = mongoose.model( 'User', UserSchema );

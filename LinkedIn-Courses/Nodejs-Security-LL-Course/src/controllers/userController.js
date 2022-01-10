@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { UserSchema } from '../models/userModel';
-
-const User = mongoose.model( 'User', UserSchema );
+import User from '../models/userModel';
 
 export const LoginRequired = ( req, res, next ) => {
     if( req.user ) {
@@ -34,7 +32,7 @@ export const Login = ( req, res ) => {
         if( !user ) {
             res.status(401).json({ message: ' Authentication Failed, No user found ' });
         } else if ( user ) {
-            if( !User.comparePassword( req.body.passowrd, user.hashPassword ) ) {
+            if( !user.comparePassword( req.body.password, user.hashPassword ) ) {
                 res.status(401).json({ message: ' Authentication failed, Wrong password '});
             } else {
                 res.status(200).json({

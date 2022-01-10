@@ -15,10 +15,6 @@ const PORT = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// app.use(cookieParser());
-
-// app.use(csrf({ cookie: true }));
-
 // serving static files
 app.use(express.static('public'));
 
@@ -34,7 +30,9 @@ const limiter = RateLimit({
 
 app.use(limiter);
 
-routes(app);
+app.use(cookieParser());
+
+app.use(csrf({ cookie: true }));
 
 // jwt setup 
 app.use((req, res, next) => {
@@ -52,6 +50,8 @@ app.use((req, res, next) => {
         next();
     }
 });
+
+routes(app);
 
 app.get('/', (req, res) => {
     // console.log(req.csrfToken());

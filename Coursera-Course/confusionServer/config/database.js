@@ -1,9 +1,8 @@
 var mongoose = require("mongoose");
-
-const DBURL = "mongodb://localhost:27017/conFusion";
+const config = require('./config');
 
 exports.connect = () => {
-    mongoose.connect(DBURL, {
+    mongoose.connect(config.mongoDbURL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     }).then(

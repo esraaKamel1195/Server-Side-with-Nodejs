@@ -104,22 +104,9 @@ function authUsingSessions(req, res, next) {
   }
 }
 
-function authUsingPassport(req, res, next) {
-
-  if (!req.user) {
-    var err = new Error('You are not authenticated!');
-    err.status = 403;
-    next(err);
-  }
-  else {
-    next();
-  }
-}
 
 // app.use(authUsingCookies);     // when using cookiees in authentication ******************
 // app.use(authUsingSessions);    // when using sessions in authentication ******************
-app.use(authUsingPassport);       // when using passport in authentication ******************
-
 
 app.use(express.static(path.join(__dirname, "public")));
 

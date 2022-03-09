@@ -25,7 +25,6 @@ dishRouter.route('/')
 .post( authenticate.verifyUser, (req, res, next) => {
     Dishes.create(req.body)
     .then((dish) => {
-        console.log('Dish created ', dish);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(dish);
@@ -126,9 +125,7 @@ dishRouter.route('/:dishId/comments')
     .then((dish) => {
         if( dish != null ) {
             req.body.author = req.user._id;
-            console.log(req.body)
             dish.comments.push(req.body);
-            console.log(dish.comments)
             dish.save()
             .then( (dish ) => {
                     res.statusCode = 200;

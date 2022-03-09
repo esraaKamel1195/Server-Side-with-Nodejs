@@ -1,16 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bodyParser = require('body-parser');
-const passport = require('passport');
+const bodyParser = require("body-parser");
+const passport = require("passport");
 
-const User = require('../models/user');
-const authenticate = require('../authenticate');
+const User = require("../models/user");
+const authenticate = require("../authenticate");
 
 router.use(bodyParser.json());
 
 //  Registeration API ******************************************************************
-router.post('/signup', (req, res, next) => {
-
+router.post("/signup", (req, res, next) => {
   // Sign up user with session & cookiees *********************************************
 
   // User.findOne({username: req.body.username})
@@ -36,99 +35,124 @@ router.post('/signup', (req, res, next) => {
 
   // Sign up user with passport *********************************************************
 
-  User.register(new User({ username: req.body.username, admin: req.body.admin }),
-    req.body.password, (err, user) => {
+  User.register(
+    new User({ username: req.body.username, admin: req.body.admin }),
+    req.body.password,
+    (err, user) => {
       if (err) {
         res.statusCode = 500;
-        res.setHeader('Content-Type', 'application/json');
+        res.setHeader("Content-Type", "application/json");
         res.json({ err: err });
       } else {
-        if (req.body.firstname)
-          user.firstname = req.body.firstname;
-        if (req.body.lastname)
-          user.lastname = req.body.lastname;
+        if (req.body.firstname) user.firstname = req.body.firstname;
+        if (req.body.lastname) user.lastname = req.body.lastname;
         user.save((err, user) => {
           if (err) {
             res.statusCode = 500;
-            res.setHeader('Content-Type', 'application/json');
+            res.setHeader("Content-Type", "application/json");
             res.json({ err: err });
             return;
           }
-          passport.authenticate('local')(req, res, () => {
+          passport.authenticate("local")(req, res, () => {
             res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({ success: true, status: 'Registred Successful!' });
-          })
+            res.setHeader("Content-Type", "application/json");
+            res.json({ success: true, status: "Registred Successful!" });
+          });
         });
       }
-    });
+    }
+  );
 });
 
 // Login API ****************************************************************************
-router.post('/login', (req, res, next) => {
+router.post("/login", (req, res, next) => {
   console.log(req.session);
   if (!req.session.user) {
     var authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      var err = new Error('You are not authenticated!');
-      res.setHeader('WWW-Authenticate', 'Basic');
+      var err = new Error("You are not authenticated!");
+      res.setHeader("WWW-Authenticate", "Basic");
       err.status = 401;
       return next(err);
     }
 
-    var auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+    var auth = new Buffer.from(authHeader.split(" ")[1], "base64")
+      .toString()
+      .split(":");
     var username = auth[0];
     var password = auth[1];
 
     User.findOne({ username: username })
       .then((user) => {
         if (user === null) {
-          var err = new Error('User ' + username + ' does not exist!');
+          var err = new Error("User " + username + " does not exist!");
           err.status = 403;
           return next(err);
-        }
-        else if (user.password !== password) {
-          var err = new Error('Your password is incorrect!');
+        } else if (user.password !== password) {
+          var err = new Error("Your password is incorrect!");
           err.status = 403;
           return next(err);
-        }
-        else if (user.username === username && user.password === password) {
-          req.session.user = 'authenticated';
+        } else if (user.username === username && user.password === password) {
+          req.session.user = "authenticated";
           res.statusCode = 200;
-          res.setHeader('Content-Type', 'text/plain');
-          res.end('You are authenticated!')
+          res.setHeader("Content-Type", "text/plain");
+          res.end("You are authenticated!");
         }
       })
       .catch((err) => next(err));
-  }
-  else {
+  } else {
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('You are already authenticated!');
+    res.setHeader("Content-Type", "text/plain");
+    res.end("You are already authenticated!");
   }
 });
 
 // Login with passport *******************************************************************
-router.post('/loginWithPassport', passport.authenticate('local'), (req, res) => {
-  var token = authenticate.getToken({ _id: req.user._id });
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.json({ success: true, token: token, status: 'You are successfully logged in!' });
-});
+router.post(
+  "/loginWithPassport",
+  passport.authenticate("local"),
+  (req, res) => {
+    var token = authenticate.getToken({ _id: req.user._id });
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+      success: true,
+      token: token,
+      status: "You are successfully logged in!",
+    });
+  }
+);
 
 // Logout API ****************************************************************************
-router.get('/logout', (req, res) => {
+router.get("/logout", (req, res) => {
   if (req.session) {
     req.session.destroy();
-    res.clearCookie('session-id');
-    res.redirect('/');
-  }
-  else {
-    var err = new Error('You are not logged in!');
+    res.clearCookie("session-id");
+    res.redirect("/");
+  } else {
+    var err = new Error("You are not logged in!");
     err.status = 403;
     next(err);
   }
 });
+
+router.get(
+  "/registeredUsers",
+  authenticate.verifyUser,
+  authenticate.verifyAdmin,
+  (req, res, next) => {
+    User.find()
+    .then((users) => {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", 'application/json');
+      res.json(users);
+    }, (err) => console.log(err))
+    .catch(err => {
+      console.error(err);
+      next(err);
+    });
+  }
+);
 
 module.exports = router;

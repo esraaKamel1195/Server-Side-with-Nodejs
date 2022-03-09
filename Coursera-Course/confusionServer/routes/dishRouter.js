@@ -22,7 +22,7 @@ dishRouter.route('/')
     });
 })
 
-.post( authenticate.verifyUser, (req, res, next) => {
+.post( authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.create(req.body)
     .then((dish) => {
         res.statusCode = 200;
@@ -35,12 +35,12 @@ dishRouter.route('/')
     });
 })
 
-.put( authenticate.verifyUser, (req, res, next) => {
+.put( authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end( 'put operation not supported on /dishes' );
 })
 
-.delete( authenticate.verifyUser, (req, res, next) => {
+.delete( authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.remove({})
     .then((resp) => {
         res.statusCode = 200;
@@ -67,12 +67,12 @@ dishRouter.get('/:dishId', (req, res, next) => {
     });
 })
 
-.post('/:dishId', authenticate.verifyUser, (req, res, next) => {
+.post('/:dishId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('Post operation not supported for the route /dishes/' + req.params.dishId);
 })
 
-.put('/:dishId', authenticate.verifyUser, (req, res, next) => {
+.put('/:dishId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.findByIdAndUpdate(req.params.dishId, { $set: req.body },
         { new: true })
     .then((dish) => {
@@ -86,7 +86,7 @@ dishRouter.get('/:dishId', (req, res, next) => {
     });
 })
 
-.delete('/:dishId', authenticate.verifyUser, (req, res, next) => {
+.delete('/:dishId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.findByIdAndRemove(req.params.dishId)
     .then((resp) => {
         res.statusCode = 200;
@@ -150,7 +150,7 @@ dishRouter.route('/:dishId/comments')
     res.end( 'put operation not supported on /dishes/' + req.params.dishId + '/comments');
 })
 
-.delete( authenticate.verifyUser, (req, res, next) => {
+.delete( authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.findById(req.params.dishId)
     .then((dish) => {
         if(dish != null) {

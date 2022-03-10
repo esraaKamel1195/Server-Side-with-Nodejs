@@ -291,22 +291,18 @@ dishRouter
     "/:dishId/comments/:commentId",
     authenticate.verifyUser,
     (req, res, next) => {
-        console.log(true);
       Dishes.findById(req.params.dishId)
         .then(
           (dish) => {
-            console.log(true);
             if (
               dish != null &&
               dish.comments.id(req.params.commentId) != null
             ) {
-                console.log(true);
               if (
                 dish.comments
                   .id(req.params.commentId)
                   .author.equals(req.user._id)
               ) {
-                console.log(true);
                 if (req.body.rating) {
                   dish.comments.id(req.params.commentId).rating =
                     req.body.rating;
@@ -315,10 +311,8 @@ dishRouter
                   dish.comments.id(req.params.commentId).comment =
                     req.body.comment;
                 }
-                console.log(true);
                 dish.save().then(
                   (dish) => {
-                    console.log(true);
                     Dishes.findById({ _id: dish._id })
                       .populate("comments.author")
                       .then((dish) => {

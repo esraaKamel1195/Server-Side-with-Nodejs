@@ -9,7 +9,7 @@
   "author": "Emmanuel Henri",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3",
+    "express": "^4.19.2",
     "socketio": "^1.0.0"
   },
   "devDependencies": {

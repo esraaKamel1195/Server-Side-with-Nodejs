@@ -10,7 +10,7 @@
   "author": "Emmanuel Henri",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "nodemon": "^1.18.4",
     "socketio": "^1.0.0"
   },
